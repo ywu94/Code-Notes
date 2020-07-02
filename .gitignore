@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+__pycache__
+*.pyc
+*_artifact/
+.ipynb_checkpoints/
+*.log
+*.pkl
+*.json
+Notebook/
+*.ipynb
+lightning_logs/
