@@ -2,6 +2,20 @@
 
 Codes for some projects
 
+## Hugging Face Experiments with Twitter Sentiment Extraction Dataset
+
+#### References
+
+[1] Kaggle Twitter Sentiment Extraction Competition: https://www.kaggle.com/c/tweet-sentiment-extraction
+
+[2] Rank 1 Solution: [Post](https://www.kaggle.com/c/tweet-sentiment-extraction/discussion/159477#891253), [Notebook 1](https://www.kaggle.com/aruchomu/no-sampler-ensemble-normal-sub-0-7363), [Notebook 2](https://www.kaggle.com/theoviel/character-level-model-magic/)
+
+[3] Other Solution: [Rank 13 Post](https://www.kaggle.com/c/tweet-sentiment-extraction/discussion/159505)
+
+[3] BERT Fine Tune: [Overview](https://zhuanlan.zhihu.com/p/62642374?utm_source=wechat_session&utm_medium=social&utm_oi=629832652505616384), [Constructing Auxiliary Sentence](https://arxiv.org/pdf/1903.09588.pdf)
+
+[4] Hugging Face Tokenizer:  [Overview](https://towardsdatascience.com/comparing-transformer-tokenizers-686307856955), [Quick Start](https://heartbeat.fritz.ai/hands-on-with-hugging-faces-new-tokenizers-library-baff35d7b465)
+
 ## PyTorch Lightning Experiments with German Traffic Sign Recognition Benchmark (GTSRB) Dataset
 
 Use PyTorch Ligntning framework to fine tune a pretrained `ResNet34` model, achieved `99.17%` accuracy on test dataset.
