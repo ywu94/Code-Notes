@@ -4,6 +4,17 @@ Codes for some projects
 
 ## Hugging Face Experiments with Twitter Sentiment Extraction Dataset
 
+Bert: `0.709` 
+
+#### Execution
+
+```
+python vocab_dl.py
+python prepare.py -r 0.8 -s 1898
+python train_model.py bert --findlr 
+python train_model.py bert --finetune --lr 5e-5
+```
+
 #### References
 
 [1] Kaggle Twitter Sentiment Extraction Competition: https://www.kaggle.com/c/tweet-sentiment-extraction
@@ -12,9 +23,9 @@ Codes for some projects
 
 [3] Other Solution: [Rank 13 Post](https://www.kaggle.com/c/tweet-sentiment-extraction/discussion/159505)
 
-[3] BERT Fine Tune: [Overview](https://zhuanlan.zhihu.com/p/62642374?utm_source=wechat_session&utm_medium=social&utm_oi=629832652505616384), [Constructing Auxiliary Sentence](https://arxiv.org/pdf/1903.09588.pdf)
+[4] BERT Fine Tune: [Overview](https://zhuanlan.zhihu.com/p/62642374?utm_source=wechat_session&utm_medium=social&utm_oi=629832652505616384), [Constructing Auxiliary Sentence](https://arxiv.org/pdf/1903.09588.pdf)
 
-[4] Hugging Face Tokenizer:  [Overview](https://towardsdatascience.com/comparing-transformer-tokenizers-686307856955), [Quick Start](https://heartbeat.fritz.ai/hands-on-with-hugging-faces-new-tokenizers-library-baff35d7b465)
+[5] Hugging Face Tokenizer:  [Overview](https://towardsdatascience.com/comparing-transformer-tokenizers-686307856955), [Quick Start](https://heartbeat.fritz.ai/hands-on-with-hugging-faces-new-tokenizers-library-baff35d7b465)
 
 ## PyTorch Lightning Experiments with German Traffic Sign Recognition Benchmark (GTSRB) Dataset
 
