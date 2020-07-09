@@ -2,6 +2,7 @@ import os
 import re
 import pickle
 import argparse
+from collections import namedtuple
 
 import numpy as np
 
@@ -13,36 +14,29 @@ import transformers
 from transformers import BertModel, BertConfig
 
 import pytorch_lightning as pl
+from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 from utils import initiate_logger
-from dataset import get_TSE_dataloader
+from dataset import get_TSE_dataloader_kfold
 from callback import PyLoggerCallback
-
-default_config = BertConfig(
-	attention_probs_dropout_prob=0.1,
-	hidden_act="gelu",
-	hidden_dropout_prob=0.1,
-	hidden_size=768,
-	initializer_range=0.02,
-	intermediate_size=3072,
-	max_position_embeddings=512,
-	num_attention_heads=12,
-	num_hidden_layers=12,
-	type_vocab_size=2,
-	vocab_size=30522
-)
+from config import get_config
 
 class BERT_TSE(nn.Module):
-	def __init__(self, config=default_config, n_layer=8, multi_sample_dropout=True):
+	def __init__(self, config):
 		super().__init__()
 		self.config = config
-		self.transformer = BertModel(config).from_pretrained('bert-base-uncased')
-		self.n_layer = n_layer
-		self.multi_sample_dropout = multi_sample_dropout
+		self.transformer = config.model_cls(config.model_config).from_pretrained(config.pretrain_wt)
 
-		self.n_feature = self.transformer.pooler.dense.out_features
+		if 'distil' in config.model_name.split('-')[0]:
+			self.n_feature = self.transformer.transformer.layer[-1].ffn.lin2.out_features
+		elif 'albert' in config.model_name.split('-')[0]:
+			self.n_feature = self.transformer.encoder.albert_layer_groups[-1].albert_layers[-1].ffn_output.out_features
+		elif 'bert' in config.model_name.split('-')[0]:
+			self.n_feature = self.transformer.pooler.dense.out_features
+
 		self.logits = nn.Sequential(
-			nn.Linear(self.n_layer*self.n_feature, 128),
+			nn.Linear(self.config.n_layer*self.n_feature, 128),
 			nn.Tanh(),
 			nn.Linear(128, 2)
 		)
@@ -68,10 +62,22 @@ class BERT_TSE(nn.Module):
 		return params_to_update
 
 	def forward(self, token_ids, token_type_ids, mask):
-		hidden_states = self.transformer(token_ids, attention_mask=mask, token_type_ids=token_type_ids, output_hidden_states=True)[-1]
-		features = torch.cat(hidden_states[:self.n_layer], dim=-1)
+		if 'distil' in self.config.model_name.split('-')[0]:
+			hidden_states = self.transformer(
+				token_ids, 
+				attention_mask=mask, 
+				output_hidden_states=True
+			)[-1]
+		else:
+			hidden_states = self.transformer(
+				token_ids, 
+				attention_mask=mask, 
+				token_type_ids=token_type_ids, 
+				output_hidden_states=True
+			)[-1]
+		features = torch.cat(hidden_states[:self.config.n_layer], dim=-1)
 
-		if self.multi_sample_dropout and self.training:
+		if self.config.multi_sample_dropout and self.training:
 			logits = torch.mean(torch.stack([self.logits(self.dropout(features)) for _ in range(5)], dim=0), dim=0)
 		else:
 			logits = self.logits(features)
@@ -102,10 +108,16 @@ class BERT_TSE(nn.Module):
 		return self._jaccard(actual, pred)
 
 class PL_BERT_TSE(pl.LightningModule):
-	def __init__(self, config=default_config, n_layer=8, learning_rate=5e-5, *args, **kwargs):
+	def __init__(self, fold, dl_config, ml_config, batch_size=64, learning_rate=1e-4, *args, **kwargs):
 		super().__init__()
+		self.batch_size = batch_size
+		self.learning_rate = learning_rate
+
 		self.save_hyperparameters()
-		self.model = BERT_TSE(config=self.hparams.config, n_layer=self.hparams.n_layer)
+		self.hparams.num_warmup_steps = int(22000/self.batch_size*0.3)
+		self.hparams.num_training_steps = int(5*22000/self.batch_size)
+
+		self.model = BERT_TSE(ml_config)
 		self._reset_metric_state()
 
 	def _reset_metric_state(self):
@@ -183,23 +195,23 @@ class PL_BERT_TSE(pl.LightningModule):
 		return {'val_loss': loss_mean, 'val_jaccard_score': jaccard_score_mean}
 
 	def train_dataloader(self):
-		dataloader = get_TSE_dataloader('train', 'bert-base-uncased')
+		dataloader = get_TSE_dataloader_kfold('train', self.hparams.fold, self.hparams.batch_size, self.hparams.dl_config)
 		return dataloader
 
 	def val_dataloader(self):
-		dataloader = get_TSE_dataloader('validation', 'bert-base-uncased')
+		dataloader = get_TSE_dataloader_kfold('validation', self.hparams.fold, self.hparams.batch_size, self.hparams.dl_config)
 		return dataloader
 
 	def configure_optimizers(self):
 		params_to_update = self.model._check_parameter_requires_grad()
-		opt = transformers.AdamW(params_to_update, lr=self.hparams.learning_rate, weight_decay=5e-3)
+		opt = transformers.AdamW(params_to_update, lr=self.hparams.learning_rate, weight_decay=1e-2)
 		sch = {
-			'scheduler': transformers.get_cosine_with_hard_restarts_schedule_with_warmup(
-				opt, num_warmup_steps=20, num_training_steps=5000, num_cycles=200),
+			'scheduler': transformers.get_linear_schedule_with_warmup(
+				opt, 
+				num_warmup_steps=self.hparams.num_warmup_steps, 
+				num_training_steps=self.hparams.num_training_steps
+			),
 			'interval': 'step',
 			'frequency': 1,
 		}
 		return [opt], [sch]
-
-
-

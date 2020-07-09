@@ -25,8 +25,20 @@ if __name__=='__main__':
 	file_url = 'https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-merges.txt'
 	download(file_url, os.path.join(vocab_dir, file_url.split('/')[-1]))
 
+	file_url = 'https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-vocab.json'
+	download(file_url, os.path.join(vocab_dir, file_url.split('/')[-1]))
+
+	file_url = 'https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-medium-vocab.json'
+	download(file_url, os.path.join(vocab_dir, file_url.split('/')[-1]))
+
 	file_url = 'https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-medium-vocab.json'
 	download(file_url, os.path.join(vocab_dir, file_url.split('/')[-1]))
 
 	file_url = 'https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-large-vocab.json'
+	download(file_url, os.path.join(vocab_dir, file_url.split('/')[-1]))
+
+	file_url = 'https://s3.amazonaws.com/models.huggingface.co/bert/roberta-base-merges.txt'
+	download(file_url, os.path.join(vocab_dir, file_url.split('/')[-1]))
+
+	file_url = 'https://s3.amazonaws.com/models.huggingface.co/bert/roberta-base-vocab.json'
 	download(file_url, os.path.join(vocab_dir, file_url.split('/')[-1]))

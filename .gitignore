@@ -3,6 +3,7 @@ __pycache__/
 __pycache__
 *.pyc
 *_artifact/
+*artifact/
 .ipynb_checkpoints/
 *.log
 *.pkl
