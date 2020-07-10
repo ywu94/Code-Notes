@@ -4,15 +4,16 @@ Codes for some projects
 
 ## Hugging Face Experiments with Twitter Sentiment Extraction Dataset
 
-Bert: `0.714` 
+Bert-Base: `0.714` , Bert-Large-WWM: `0.712`, RoBERTa-Base: `0.713`, RoBERTs-Base-SQuAD2: `0.711`, RoBERTa-Large-MNLI: `0.715`
 
 #### Execution
 
 ```
 python vocab_dl.py
 python prepare.py -f
-python python train_model.py bert-base-uncased --finetune --lr 1.2e-4
-python python train_model.py bert-large-uncased-whole-word-masking-finetuned-squad --finetune --lr 1e-4
+python train_model.py bert-base-uncased --finetune --lr 1.2e-4
+python train_model.py bert-large-uncased-whole-word-masking-finetuned-squad --finetune --lr 1e-4
+python train_model.py roberta-base --finetune --lr 1.4e-4
 ```
 
 #### References
@@ -26,6 +27,8 @@ python python train_model.py bert-large-uncased-whole-word-masking-finetuned-squ
 [4] BERT Fine Tune: [Pretrained Model Inventory](https://huggingface.co/transformers/pretrained_models.html), [Overview](https://zhuanlan.zhihu.com/p/62642374?utm_source=wechat_session&utm_medium=social&utm_oi=629832652505616384), [Constructing Auxiliary Sentence](https://arxiv.org/pdf/1903.09588.pdf)
 
 [5] Hugging Face Tokenizer:  [Overview](https://towardsdatascience.com/comparing-transformer-tokenizers-686307856955), [Quick Start](https://heartbeat.fritz.ai/hands-on-with-hugging-faces-new-tokenizers-library-baff35d7b465)
+
+[6] Multi-Sample Dropout for Accelerated Training and Better Generalization: [Paper](https://arxiv.org/pdf/1905.09788.pdf)
 
 ## PyTorch Lightning Experiments with German Traffic Sign Recognition Benchmark (GTSRB) Dataset
 

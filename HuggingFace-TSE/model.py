@@ -28,11 +28,13 @@ class BERT_TSE(nn.Module):
 		self.config = config
 		self.transformer = config.model_cls(config.model_config).from_pretrained(config.pretrain_wt)
 
-		if 'distil' in config.model_name.split('-')[0]:
+		if 'distilbert' in config.model_name.split('-')[0]:
 			self.n_feature = self.transformer.transformer.layer[-1].ffn.lin2.out_features
 		elif 'albert' in config.model_name.split('-')[0]:
 			self.n_feature = self.transformer.encoder.albert_layer_groups[-1].albert_layers[-1].ffn_output.out_features
 		elif 'bert' in config.model_name.split('-')[0]:
+			self.n_feature = self.transformer.pooler.dense.out_features
+		elif 'roberta' in config.model_name.split('-')[0]:
 			self.n_feature = self.transformer.pooler.dense.out_features
 
 		self.logits = nn.Sequential(

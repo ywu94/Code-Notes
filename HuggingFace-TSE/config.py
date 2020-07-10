@@ -42,7 +42,7 @@ def get_config(model):
 			model,
 			BertConfig.from_pretrained(model)
 		)
-		batch_size = 16
+		batch_size = 8
 	elif model=='roberta-base':
 		dl_config = DATALOADER_CONFIG(
 			{
@@ -58,5 +58,37 @@ def get_config(model):
 			model, 
 			RobertaConfig.from_pretrained(model)
 		)
-		batch_size = 64
+		batch_size = 48
+	elif model=='roberta-base-squad2':
+		dl_config = DATALOADER_CONFIG(
+			{
+				'vocab_file': 'roberta-base-vocab.json',
+				'merge_file': 'roberta-base-merges.txt'
+			},
+			get_ByteLevelBPE_tokenizer,
+			process_roberta_data
+		)
+		ml_config = MODEL_CONFIG(
+			model, 
+			RobertaModel,
+			'deepset/roberta-base-squad2', 
+			RobertaConfig.from_pretrained('deepset/roberta-base-squad2')
+		)
+		batch_size = 48
+	elif model=='roberta-large-mnli':
+		dl_config = DATALOADER_CONFIG(
+			{
+				'vocab_file': 'roberta-large-vocab.json',
+				'merge_file': 'roberta-large-merges.txt'
+			},
+			get_ByteLevelBPE_tokenizer,
+			process_roberta_data
+		)
+		ml_config = MODEL_CONFIG(
+			model, 
+			RobertaModel,
+			model, 
+			RobertaConfig.from_pretrained(model)
+		)
+		batch_size = 24
 	return dl_config, ml_config, batch_size
