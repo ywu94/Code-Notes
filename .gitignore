@@ -11,3 +11,5 @@ __pycache__
 Notebook/
 *.ipynb
 lightning_logs/
+gen-py
+sample

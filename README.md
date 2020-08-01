@@ -2,6 +2,20 @@
 
 Codes for some projects
 
+## Thrift Experiment
+
+```
+thrift -gen py sample.thrift
+mv -vi ./gen-py/sample .
+python server.py
+python client.py
+```
+
+#### References
+
+[1] Python Thrift Tutorial: https://www.cnblogs.com/shenh/p/10529073.html
+
+
 ## Hugging Face Experiments with Twitter Sentiment Extraction Dataset
 
 Bert-Base: `0.714` , Bert-Large-WWM: `0.712`, RoBERTa-Base: `0.713`, RoBERTs-Base-SQuAD2: `0.711`, RoBERTa-Large-MNLI: `0.715`
