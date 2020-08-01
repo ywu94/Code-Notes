@@ -4,6 +4,8 @@ Codes for some projects
 
 ## Thrift Experiment
 
+#### Execution
+
 ```
 thrift -gen py sample.thrift
 mv -vi ./gen-py/sample .
