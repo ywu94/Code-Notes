@@ -7,6 +7,8 @@ from thrift.protocol import TBinaryProtocol
 from thrift.server import TServer
 import socket
 
+import sample_pb2
+
 
 class TransmitHandler:
 	def __init__(self):
@@ -24,7 +26,17 @@ class TransmitHandler:
 		if cmd ==1:
 			return json.dumps({token:data})
 		else:
-			return 'cmd不匹配'
+			return 'fail'
+
+	def readPB(self, pbstring):
+		try:
+			address_book = sample_pb2.AddressBook()
+			address_book.ParseFromString(pbstring)
+			print(address_book)
+			return 'success'
+		except:
+			return 'fail'
+
 
 if __name__=="__main__":
 	handler = TransmitHandler()

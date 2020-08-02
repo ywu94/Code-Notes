@@ -2,18 +2,22 @@
 
 Codes for some projects
 
-## Thrift Experiment
+## Thrift & Protobuf Experiment
 
 ```
 thrift -gen py sample.thrift
 mv -vi ./gen-py/sample .
+protoc --python_out=. ./sample.
+python write_pb2.py address_book.pb
 python server.py
 python client.py
 ```
 
 #### References
 
-[1] Python Thrift Tutorial: https://www.cnblogs.com/shenh/p/10529073.html
+[1] Thrift Tutorial: https://thrift-tutorial.readthedocs.io/en/latest/usage-example.html
+
+[2] Protocol Buffer Tutorial: https://developers.google.com/protocol-buffers/docs/pythontutorial
 
 
 ## Hugging Face Experiments with Twitter Sentiment Extraction Dataset
