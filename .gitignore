@@ -14,3 +14,5 @@ lightning_logs/
 gen-py
 *sample/
 *.pb
+*.idea/
+*_workspace/
