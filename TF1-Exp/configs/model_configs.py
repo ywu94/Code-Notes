@@ -1,1 +1,0 @@
-DROPOUT_PROB = 0.5
